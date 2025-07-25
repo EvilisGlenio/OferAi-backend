@@ -19,8 +19,8 @@ import { ScrapedItemsModule } from './scraped-items/scraped-items.module';
         username: configService.get<string>('POSTGRES_USER'),
         password: configService.get<string>('POSTGRES_PASSWORD'),
         database: configService.get<string>('POSTGRES_DB'),
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true, // ATENÇÃO: APENAS PARA DESENVOLVIMENTO! NUNCA EM PRODUÇÃO!
+        autoLoadEntities: true, // Maneira robusta e recomendada para carregar entidades
+        synchronize: true, // ATENÇÃO: APENAS PARA DESENVOLVIMENTO!
       }),
       inject: [ConfigService], // Injeta o ConfigService no useFactory
     }),
