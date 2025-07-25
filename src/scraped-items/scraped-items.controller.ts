@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -27,19 +28,21 @@ export class ScrapedItemsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.scrapedItemsService.findOne(+id);
+    // O ID é um UUID (string), não um número. A conversão `+id` estava incorreta.
+    return this.scrapedItemsService.findOne(id);
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() UpdateScrapedItemDto: UpdateScrapedItemDto,
+    @Body() updateScrapedItemDto: UpdateScrapedItemDto, // Corrigido para a convenção de nomenclatura (camelCase)
   ) {
-    return this.scrapedItemsService.update(+id, UpdateScrapedItemDto);
+    return this.scrapedItemsService.update(id, updateScrapedItemDto);
   }
 
   @Delete(':id')
+  @HttpCode(204) // Retorna '204 No Content' em caso de sucesso, que é o padrão para DELETE.
   remove(@Param('id') id: string) {
-    return this.scrapedItemsService.remove(+id);
+    return this.scrapedItemsService.remove(id);
   }
 }
