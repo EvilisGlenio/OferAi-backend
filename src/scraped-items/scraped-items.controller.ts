@@ -4,45 +4,49 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ScrapedItemsService } from './scraped-items.service';
 import { CreateScrapedItemDto } from './dto/create-scraped-item.dto';
 import { UpdateScrapedItemDto } from './dto/update-scraped-item.dto';
+import { ScrapedItem } from './entities/scraped-item.entity';
 
 @Controller('scraped-items')
 export class ScrapedItemsController {
   constructor(private readonly scrapedItemsService: ScrapedItemsService) {}
 
   @Post()
-  create(@Body() createScrapedItemDto: CreateScrapedItemDto) {
+  @HttpCode(HttpStatus.CREATED) // Retorna 201 Created
+  async create(
+    @Body() createScrapedItemDto: CreateScrapedItemDto,
+  ): Promise<ScrapedItem> {
     return this.scrapedItemsService.create(createScrapedItemDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<ScrapedItem[]> {
     return this.scrapedItemsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    // O ID é um UUID (string), não um número. A conversão `+id` estava incorreta.
+  async findOne(@Param('id') id: string): Promise<ScrapedItem> {
     return this.scrapedItemsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
+  @Put(':id')
+  async update(
     @Param('id') id: string,
-    @Body() updateScrapedItemDto: UpdateScrapedItemDto, // Corrigido para a convenção de nomenclatura (camelCase)
-  ) {
+    @Body() updateScrapedItemDto: UpdateScrapedItemDto,
+  ): Promise<ScrapedItem> {
     return this.scrapedItemsService.update(id, updateScrapedItemDto);
   }
 
   @Delete(':id')
-  @HttpCode(204) // Retorna '204 No Content' em caso de sucesso, que é o padrão para DELETE.
-  remove(@Param('id') id: string) {
+  @HttpCode(HttpStatus.NO_CONTENT) // Retorna 204 No Content para deleção bem-sucedida
+  async remove(@Param('id') id: string): Promise<void> {
     return this.scrapedItemsService.remove(id);
   }
 }
